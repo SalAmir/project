@@ -50,7 +50,6 @@ public class MainUI1 extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		session = HibernateUtil.getSessionFactory().openSession();
-		threadInsert = new ThreadInsert(session);
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
@@ -61,10 +60,13 @@ public class MainUI1 extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (!isPressIns1)
 				{
+					threadInsert = new ThreadInsert(session);
 					threadInsert.start();
 
-					tabUI1 = new TableUI1(contentPane, session);
-					tabUI1.setVisible(true);
+					//if (tabUI1 == null){
+						tabUI1 = new TableUI1(contentPane, session);
+						tabUI1.setVisible(true);
+					//}
 
 					isPressIns1 = true;
 					isDisplay = true;
@@ -82,13 +84,14 @@ public class MainUI1 extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (!isPressIns2)
 				{
-					Session session = HibernateUtil.getSessionFactory().openSession();
 					threadInsert = new ThreadInsert(session);
 					threadInsert.start();
 
-					tabUI1 = new TableUI1(contentPane, session);
-					tabUI1.setVisible(true);
-
+					if ( tabUI1 == null){
+						tabUI1 = new TableUI1(contentPane, session);
+						tabUI1.setVisible(true);
+					}
+					
 					isPressIns2 = true;
 					isDisplay = true;
 					HibernateUtil.shutdown();
@@ -108,7 +111,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert.stopThread();
-				tabUI1.dispose();
+				//tabUI1.dispose();
+				tabUI1.setVisible(false);
 				tabUI1.timerStop();
 				isPressIns1 = false;
 				System.out.println("thread1 stop");
@@ -121,7 +125,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert.stopThread();
-				tabUI1.dispose();
+				//tabUI1.dispose();
+				tabUI1.setVisible(false);
 				tabUI1.timerStop();
 				isPressIns2 = false;
 				System.out.println("thread2 stop");

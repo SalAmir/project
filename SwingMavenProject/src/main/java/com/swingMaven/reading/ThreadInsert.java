@@ -21,10 +21,8 @@ public class ThreadInsert extends Thread{
 	
 	private void startGeneratingData(){
 		while (!isStop){
-			Random rand = new Random();
-			int number = 2000 + rand.nextInt(10000 - 2000 + 1);
-			try {
-				sleep(number);
+			synchronized (ThreadInsert.class) {
+				Random rand = new Random();
 				session.beginTransaction();
 				TAB1Database db = new TAB1Database();
 				db.setCOL1(num);
@@ -35,9 +33,13 @@ public class ThreadInsert extends Thread{
 		    	session.getTransaction().commit();
 		    	session.clear();
 				num += 100;
-			} 
-			catch (InterruptedException e) {
-				e.printStackTrace();
+				try {
+					int number = 2000 + rand.nextInt(10000 - 2000 + 1);
+					sleep(number);
+				} 
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
