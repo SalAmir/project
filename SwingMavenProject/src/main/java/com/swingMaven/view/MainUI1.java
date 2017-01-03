@@ -17,11 +17,14 @@ import org.hibernate.classic.Session;
 import com.swingMaven.hibernate.HibernateUtil;
 import com.swingMaven.model.TAB1Database;
 import com.swingMaven.reading.ThreadInsert;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainUI1 extends JFrame{
 
 	private JPanel contentPane = null;
-	private ThreadInsert threadInsert = null;
+	private ThreadInsert threadInsert1 = null;
+	private ThreadInsert threadInsert2 = null;
 	private TableUI1 tabUI1 = null;
 	private int num = 0;
 	private boolean isPressIns1 = false;
@@ -48,8 +51,10 @@ public class MainUI1 extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		session = HibernateUtil.getSessionFactory().openSession();
+		tabUI1 = new TableUI1(contentPane, session);
+		tabUI1.timerStop();
 		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
@@ -60,20 +65,19 @@ public class MainUI1 extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (!isPressIns1)
 				{
-					threadInsert = new ThreadInsert(session);
-					threadInsert.start();
-
-					//if (tabUI1 == null){
-						tabUI1 = new TableUI1(contentPane, session);
-						tabUI1.setVisible(true);
-					//}
-
+					threadInsert1 = new ThreadInsert(session);
+					threadInsert1.setName("thread1");
+					threadInsert1.start();
+					System.out.println(threadInsert1.getName() + " start");
+					tabUI1.timerStart();
+					tabUI1.setVisible(true);
 					isPressIns1 = true;
 					isDisplay = true;
-					HibernateUtil.shutdown();
 				}
-				if (!tabUI1.isVisible())
+				if (!tabUI1.isVisible()){
+					tabUI1.timerStart();
 					tabUI1.setVisible(true);
+				}
 			}
 		});
 		btnNewButton.setBounds(65, 11, 135, 23);
@@ -84,11 +88,11 @@ public class MainUI1 extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (!isPressIns2)
 				{
-					threadInsert = new ThreadInsert(session);
-					threadInsert.start();
+					threadInsert2 = new ThreadInsert(session);
+					threadInsert2.setName("thread2");
+					threadInsert2.start();
 
-					if ( tabUI1 == null){
-						tabUI1 = new TableUI1(contentPane, session);
+					if (!tabUI1.isVisible()){
 						tabUI1.setVisible(true);
 					}
 					
@@ -110,12 +114,11 @@ public class MainUI1 extends JFrame{
 		JButton btnNewButton_3 = new JButton("Stop_Insert1");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threadInsert.stopThread();
-				//tabUI1.dispose();
+				threadInsert1.stopThread();
 				tabUI1.setVisible(false);
 				tabUI1.timerStop();
 				isPressIns1 = false;
-				System.out.println("thread1 stop");
+				System.out.println(threadInsert1.getName() + " stop");
 			}
 		});
 		btnNewButton_3.setBounds(65, 113, 135, 23);
@@ -124,12 +127,11 @@ public class MainUI1 extends JFrame{
 		JButton btnNewButton_4 = new JButton("Stop_Insert2");
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threadInsert.stopThread();
-				//tabUI1.dispose();
+				threadInsert2.stopThread();
 				tabUI1.setVisible(false);
 				tabUI1.timerStop();
-				isPressIns2 = false;
-				System.out.println("thread2 stop");
+				isPressIns1 = false;
+				System.out.println(threadInsert2.getName() + " stop");
 			}
 		});
 		btnNewButton_4.setBounds(65, 147, 135, 23);
@@ -139,6 +141,13 @@ public class MainUI1 extends JFrame{
 		btnNewButton_5.setBounds(65, 181, 135, 23);
 		panel.add(btnNewButton_5);
 
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				HibernateUtil.shutdown();
+			}
+		});
+		
 		setMinimumSize(new Dimension(270, 250));
 		setLocationRelativeTo(null);
 		setResizable(false);

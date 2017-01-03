@@ -24,6 +24,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.Timer;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class TableUI1 extends JFrame{
 	private JPanel contentPane = null;
@@ -33,6 +35,12 @@ public class TableUI1 extends JFrame{
 	private Timer timer = null;
 	
 	public TableUI1(final JPanel mainPane, final Session session){
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				timerStop();
+			}
+		});
 		setTitle("TableUI1");
 		contentPane = new JPanel();
 		setContentPane(contentPane);
@@ -82,11 +90,16 @@ public class TableUI1 extends JFrame{
 			}
 		});
 		timer.start();
+		
 		repaint();
 	}
 	
 	public void timerStop(){
 		timer.stop();
+	}
+	
+	public void timerStart(){
+		timer.start();
 	}
 	
 	private void readFromTAB1(){

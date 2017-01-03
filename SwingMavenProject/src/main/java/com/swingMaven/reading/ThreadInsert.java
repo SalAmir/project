@@ -21,7 +21,7 @@ public class ThreadInsert extends Thread{
 	
 	private void startGeneratingData(){
 		while (!isStop){
-			synchronized (ThreadInsert.class) {
+			//synchronized (ThreadInsert.class) {
 				Random rand = new Random();
 				session.beginTransaction();
 				TAB1Database db = new TAB1Database();
@@ -40,7 +40,7 @@ public class ThreadInsert extends Thread{
 				catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			}
+			//}
 		}
 	}
 	
