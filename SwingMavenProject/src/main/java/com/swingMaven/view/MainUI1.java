@@ -21,14 +21,14 @@ import com.swingMaven.reading.ThreadInsert;
 public class MainUI1 extends JFrame{
 
 	private JPanel contentPane = null;
-	private ThreadInsert threadReading1 = null;
-	private ThreadInsert threadReading2 = null;
+	private ThreadInsert threadInsert = null;
 	private TableUI1 tabUI1 = null;
 	private int num = 0;
 	private boolean isPressIns1 = false;
 	private boolean isPressIns2 = false;
 	private boolean isDisplay = false;
-
+	private Session session = null;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -48,7 +48,10 @@ public class MainUI1 extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
+		session = HibernateUtil.getSessionFactory().openSession();
+		threadInsert = new ThreadInsert(session);
+		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
@@ -58,22 +61,7 @@ public class MainUI1 extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				if (!isPressIns1)
 				{
-					Session session = HibernateUtil.getSessionFactory().openSession();
-					threadReading1 = new ThreadInsert(session);
-					threadReading1.start();
-					//				thread = new Thread(){
-					//					@Override
-					//					public void run(){
-					//						try{
-					//							Random rand = new Random();
-					//							startGeneratingData(session, rand);
-					//						}
-					//						catch (Exception ex){
-					//							ex.printStackTrace();
-					//						}
-					//					}
-					//				};
-					//				thread.start();
+					threadInsert.start();
 
 					tabUI1 = new TableUI1(contentPane, session);
 					tabUI1.setVisible(true);
@@ -95,21 +83,8 @@ public class MainUI1 extends JFrame{
 				if (!isPressIns2)
 				{
 					Session session = HibernateUtil.getSessionFactory().openSession();
-					threadReading2 = new ThreadInsert(session);
-					threadReading2.start();
-					//				thread = new Thread(){
-					//					@Override
-					//					public void run(){
-					//						try{
-					//							Random rand = new Random();
-					//							startGeneratingData(session, rand);
-					//						}
-					//						catch (Exception ex){
-					//							ex.printStackTrace();
-					//						}
-					//					}
-					//				};
-					//				thread.start();
+					threadInsert = new ThreadInsert(session);
+					threadInsert.start();
 
 					tabUI1 = new TableUI1(contentPane, session);
 					tabUI1.setVisible(true);
@@ -132,7 +107,7 @@ public class MainUI1 extends JFrame{
 		JButton btnNewButton_3 = new JButton("Stop_Insert1");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threadReading1.stopThread();
+				threadInsert.stopThread();
 				tabUI1.dispose();
 				tabUI1.timerStop();
 				isPressIns1 = false;
@@ -145,7 +120,7 @@ public class MainUI1 extends JFrame{
 		JButton btnNewButton_4 = new JButton("Stop_Insert2");
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threadReading2.stopThread();
+				threadInsert.stopThread();
 				tabUI1.dispose();
 				tabUI1.timerStop();
 				isPressIns2 = false;
@@ -163,26 +138,4 @@ public class MainUI1 extends JFrame{
 		setLocationRelativeTo(null);
 		setResizable(false);
 	}
-
-	//	private void startGeneratingData(final Session session, Random rand){
-	//		int number = 2000 + rand.nextInt(10000 - 2000 + 1);
-	//		try {
-	//			Thread.sleep(10000);
-	//		} catch (InterruptedException e) {
-	//			// TODO Auto-generated catch block
-	//			e.printStackTrace();
-	//		}
-	//		while (thread.isAlive()){
-	//			session.beginTransaction();
-	//			TAB1Database db = new TAB1Database();
-	//			db.setCOL1(num);
-	//			db.setCOL2(Integer.toString(num));
-	//			db.setCOL3(rand.nextInt(10000));
-	//			db.setCOL4(Integer.toString(rand.nextInt(10000)));
-	//	    	session.save(db);
-	//	    	session.getTransaction().commit();
-	//	    	session.clear();
-	//			num += 100;
-	//		}
-	//	}
 }
