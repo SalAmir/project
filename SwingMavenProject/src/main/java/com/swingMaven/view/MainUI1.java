@@ -15,8 +15,9 @@ import javax.swing.border.EmptyBorder;
 import org.hibernate.classic.Session;
 
 import com.swingMaven.hibernate.HibernateUtil;
+import com.swingMaven.insert.ThreadInsert;
 import com.swingMaven.model.TAB1Database;
-import com.swingMaven.reading.ThreadInsert;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -91,17 +92,16 @@ public class MainUI1 extends JFrame{
 					threadInsert2 = new ThreadInsert(session);
 					threadInsert2.setName("thread2");
 					threadInsert2.start();
-
-					if (!tabUI1.isVisible()){
-						tabUI1.setVisible(true);
-					}
-					
+					System.out.println(threadInsert2.getName() + " start");
+					tabUI1.timerStart();
+					tabUI1.setVisible(true);
 					isPressIns2 = true;
 					isDisplay = true;
-					HibernateUtil.shutdown();
 				}
-				if (!tabUI1.isVisible())
+				if (!tabUI1.isVisible()){
+					tabUI1.timerStart();
 					tabUI1.setVisible(true);
+				}
 			}
 		});
 		btnNewButton_1.setBounds(65, 45, 135, 23);
@@ -115,8 +115,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert1.stopThread();
-				tabUI1.setVisible(false);
-				tabUI1.timerStop();
+				//tabUI1.setVisible(false);
+				//tabUI1.timerStop();
 				isPressIns1 = false;
 				System.out.println(threadInsert1.getName() + " stop");
 			}
@@ -128,8 +128,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert2.stopThread();
-				tabUI1.setVisible(false);
-				tabUI1.timerStop();
+				//tabUI1.setVisible(false);
+				//tabUI1.timerStop();
 				isPressIns1 = false;
 				System.out.println(threadInsert2.getName() + " stop");
 			}
