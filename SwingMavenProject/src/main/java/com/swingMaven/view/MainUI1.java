@@ -145,8 +145,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert1.stopThread();
-				isPressIns1 = false;
 				System.out.println(threadInsert1.getName() + " stop");
+				isPressIns1 = false;
 			}
 		});
 		btnNewButton_3.setBounds(65, 113, 135, 23);
@@ -156,8 +156,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadInsert2.stopThread();
-				isPressIns1 = false;
 				System.out.println(threadInsert2.getName() + " stop");
+				isPressIns2 = false;
 			}
 		});
 		btnNewButton_4.setBounds(65, 147, 135, 23);
@@ -167,8 +167,8 @@ public class MainUI1 extends JFrame{
 		btnNewButton_5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				threadDelete.stopThread();
-				isPressDel = false;
 				System.out.println(threadDelete.getName() + " stop");
+				isPressDel = false;
 			}
 		});
 		btnNewButton_5.setBounds(65, 181, 135, 23);

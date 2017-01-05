@@ -14,6 +14,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.table.DefaultTableModel;
 
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
@@ -31,7 +32,7 @@ public class TableUI1 extends JFrame{
 	private JPanel contentPane = null;
 	private JTable tableUI1 = null;
 	private DefaultTableModel tabModel = null;
-	private Session currentSession = null;
+	private Session session = null;
 	private Timer timer = null;
 	
 	public TableUI1(final JPanel mainPane, final Session session){
@@ -40,7 +41,8 @@ public class TableUI1 extends JFrame{
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		currentSession = session;
+		this.session = session;
+		
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
 		
@@ -103,8 +105,16 @@ public class TableUI1 extends JFrame{
 	}
 	
 	private void readFromTAB1(){
-		Query query = currentSession.createQuery("FROM TAB1Database");
-		Collection collections = query.list();
+		Collection<TAB1Database> collections = null;
+		try{
+			session.beginTransaction();
+			Query query = session.createQuery("FROM TAB1Database");
+			collections = query.list();
+			session.getTransaction().commit();
+		}
+		catch (HibernateException he){
+			he.printStackTrace();
+		}
 		TAB1Database[] tabValues = new TAB1Database[collections.size()];
 		Iterator<TAB1Database> it = collections.iterator();
 		int countRow = 0;

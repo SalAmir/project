@@ -2,6 +2,7 @@ package com.swingMaven.delete;
 
 import java.util.Random;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -23,14 +24,20 @@ public class ThreadDelete extends Thread{
 		while (!isStop){
 			Random rand = new Random();
 			System.out.println("Thread name - " + this.getName() + " index = " + index);
-			int query = session.createQuery("DELETE FROM TAB1Database WHERE col1 = :index")
-					.setParameter("index", index).executeUpdate();
-			index += 100;
 			try {
+				session.beginTransaction();
+				int query = session.createQuery("DELETE FROM TAB1Database WHERE col1 = :index")
+						.setParameter("index", index).executeUpdate();
+				session.getTransaction().commit();
+				index += 100;
 				int number = 4000 + rand.nextInt(10000 - 4000 + 1);
-				sleep(number);
+				try {
+					sleep(number);
+				} catch (InterruptedException he) {
+					he.printStackTrace();
+				}
 			} 
-			catch (InterruptedException e) {
+			catch (HibernateException e) {
 				e.printStackTrace();
 			}
 		}

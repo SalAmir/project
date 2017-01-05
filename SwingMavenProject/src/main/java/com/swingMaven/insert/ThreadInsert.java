@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Random;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 import com.swingMaven.model.TAB1Database;
@@ -24,28 +25,32 @@ public class ThreadInsert extends Thread{
 	
 	private void startGeneratingData(){
 		while (!isStop){
-			synchronized (ThreadInsert.class) {
+		//	synchronized (ThreadInsert.class) {
 				System.out.println("Thread name - " + this.getName() + " num = " + num);
 				Random rand = new Random();
-				session.beginTransaction();
-				TAB1Database data = new TAB1Database();
-				data.setCOL1(num);
-				data.setCOL2(Integer.toString(num));
-				data.setCOL3(rand.nextInt(10000));
-				data.setCOL4(Integer.toString(rand.nextInt(10000)));
-				listData.add(data);
-		    	session.save(data);
-		    	session.getTransaction().commit();
-		    	//session.clear();
-				num += 100;
 				try {
+					session.beginTransaction();
+					TAB1Database data = new TAB1Database();
+					data.setCOL1(num);
+					data.setCOL2(Integer.toString(num));
+					data.setCOL3(rand.nextInt(10000));
+					data.setCOL4(Integer.toString(rand.nextInt(10000)));
+					listData.add(data);
+			    	session.save(data);
+			    	session.getTransaction().commit();
+					num += 100;
 					int number = 2000 + rand.nextInt(10000 - 2000 + 1);
-					sleep(number);
+					try {
+						sleep(number);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+			    	data = null;
 				} 
-				catch (InterruptedException e) {
-					e.printStackTrace();
+				catch (HibernateException he) {
+					he.printStackTrace();
 				}
-			}
+			//}
 		}
 	}
 	
